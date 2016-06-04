@@ -3,5 +3,5 @@ project(programming)
 
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11")
 
-set(SOURCE_FILES "BST/BST_Basic.cpp")
+set(SOURCE_FILES Array/Binary_Search.cpp)
 add_executable(new ${SOURCE_FILES})
