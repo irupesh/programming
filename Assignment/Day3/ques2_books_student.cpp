@@ -28,7 +28,7 @@ bool isPossible(int arr[], int size, int student, int curMin) {
     return true;
 }
 
-int solve(int arr[], int size, int student) {
+int assign(int arr[], int size, int student) {
 
     int sum = 0;
     if (size < student) return -1;
@@ -62,8 +62,7 @@ int solve(int arr[], int size, int student) {
 int main() {
 
     int arr[] = {12, 34, 67, 90};
-    int n = sizeof arr / sizeof arr[0];
     int m = 2;
 
-    cout << solve(arr, n, m) << endl;
+    cout << assign(arr, 4, m) << endl;
 }
