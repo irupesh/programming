@@ -2,9 +2,6 @@
 // Created by Rupesh Choudhary on 3/22/2016.
 //
 
-
-/* P3.1 */
-
 #include<stdio.h>
 #include<stdlib.h>
 

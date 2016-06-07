@@ -1,5 +1,5 @@
 //
-// Created by Rupesh Choudhary on 3/18/2016.
+// Created by Rupesh Choudhary on 1/18/2016.
 //
 
 //function to interchange the position of the character
@@ -31,7 +31,7 @@ void permute(char *str, int start, int end) {
 }
 
 int main() {
-    char str[] = "ABC";
+    char str[] = "ABCD";
     int n = strlen(str);
     permute(str, 0, n - 1);
     return 0;
