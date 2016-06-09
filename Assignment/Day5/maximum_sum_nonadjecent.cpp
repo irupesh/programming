@@ -12,13 +12,13 @@ int max(int num1, int num2) {
 
 int FindMaxSum(int arr[], int n) {
     int incl = arr[0];
-    int excl = 0;
-    int excl_new;
+    int temp = 0;
+    int excl;
 
     for (int i = 1; i < n; i++) {
-        excl_new = max(incl, excl);
-        incl = excl + arr[i];
-        excl = excl_new;
+        excl = max(incl, temp);
+        incl = temp + arr[i];
+        temp = excl;
     }
 
     return max(incl, excl);
