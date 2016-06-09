@@ -3,5 +3,5 @@ project(programming)
 
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11")
 
-set(SOURCE_FILES Assignment/Day5/ZigZag.cpp)
+set(SOURCE_FILES Assignment/Day5/minimun_difference_pair_array.cpp)
 add_executable(new ${SOURCE_FILES})
