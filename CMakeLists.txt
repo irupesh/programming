@@ -3,5 +3,5 @@ project(programming)
 
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11")
 
-set(SOURCE_FILES Queue/binary_representation_n.cpp)
+set(SOURCE_FILES Assignment/Day5/inplace_merge_ll.cpp)
 add_executable(new ${SOURCE_FILES})
