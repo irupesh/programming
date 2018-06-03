@@ -31,7 +31,7 @@ void permute(char *str, int start, int end) {
 }
 
 int main() {
-    char str[] = "ABCD";
+    char str[] = "ABC";
     int n = strlen(str);
     permute(str, 0, n - 1);
     return 0;

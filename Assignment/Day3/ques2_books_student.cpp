@@ -13,9 +13,9 @@ bool isPossible(int arr[], int size, int student, int curMin) {
 
     for (int i = 0; i < size; i++) {
 
-        if (arr[i] > curMin) return false;
+        if (arr[i]>curMin) return false;
 
-        if (curSum + arr[i] > curMin) {
+        if (curSum+arr[i] > curMin) {
 
             studentsRequired++;
             curSum = arr[i];

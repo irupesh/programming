@@ -13,7 +13,7 @@ int max(int num1, int num2) {
 int FindMaxSum(int arr[], int n) {
     int incl = arr[0];
     int temp = 0;
-    int excl;
+    int excl=0;
 
     for (int i = 1; i < n; i++) {
         excl = max(incl, temp);
