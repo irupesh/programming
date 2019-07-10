@@ -65,6 +65,6 @@ int main(){
 	
 	cout << "Enter a string:\n";
 	cin >> text;
-	isUniqueString(text) ? cout << "Unique" : cout << "Not Unique";
+	isUniqueString(text) ? cout << "Unique\n" : cout << "Not Unique\n";
 	return 0;
 }
