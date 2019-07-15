@@ -1,0 +1,336 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+     Copyright (C) 2007 The Android Open Source Project
+
+     Licensed under the Apache License, Version 2.0 (the "License");
+     you may not use this file except in compliance with the License.
+     You may obtain a copy of the License at
+  
+          http://www.apache.org/licenses/LICENSE-2.0
+  
+     Unless required by applicable law or agreed to in writing, software
+     distributed under the License is distributed on an "AS IS" BASIS,
+     WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+     See the License for the specific language governing permissions and
+     limitations under the License.
+-->
+
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    coreApp="true"
+    package="com.android.providers.telephony"
+    android:sharedUserId="android.uid.phone" >
+
+    <uses-permission android:name="android.permission.RECEIVE_SMS" />
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.UPDATE_APP_OPS_STATS" />
+    <uses-permission android:name="android.permission.READ_PHONE_STATE" />
+    <uses-permission android:name="android.permission.MODIFY_PHONE_STATE" />
+    <uses-permission android:name="android.permission.WRITE_MEDIA_STORAGE" />
+    <uses-permission android:name="android.permission.INTERACT_ACROSS_USERS" />
+    <uses-permission android:name="android.permission.INTERACT_ACROSS_USERS_FULL" />
+    <uses-permission android:name="android.permission.CLEAR_APP_USER_DATA" />
+    <uses-permission android:name="android.permission.WRITE_SECURE_SETTINGS" />
+    <uses-permission android:name="android.permission.MEDIA_CONTENT_CONTROL" />
+    <permission android:name="com.lge.permission.ACCESS_SPAM_DATA" android:protectionLevel="signatureOrSystem" />
+
+    <protected-broadcast android:name="android.provider.action.EXTERNAL_PROVIDER_CHANGE" />
+    <!-- This permission is only used to send the ACTION_EXTERNAL_PROVIDER_CHANGE intent. -->
+    <!-- 2016-07-15, sy.yun@lge.com LGP_DATA_APN_UPDATE_COTA -->
+    <protected-broadcast android:name="com.lge.intent.action.ACTION_DATA_COTA_APN_UPDATE" />
+    <protected-broadcast android:name="android.intent.action.CONTENT_CHANGED" />
+
+    <application
+        android:process="com.android.phone"
+        android:allowClearUserData="false"
+        android:fullBackupOnly="true"
+        android:backupInForeground="true"
+        android:backupAgent="TelephonyBackupAgent"
+        android:restoreAnyVersion="true"
+        android:icon="@mipmap/ic_launcher_phone"
+        android:label="@string/app_label"
+        android:usesCleartextTraffic="true"
+        android:defaultToDeviceProtectedStorage="true"
+        android:directBootAware="true">
+
+        <meta-data
+            android:name="LGBackup.Support"
+            android:value="true" />
+        <meta-data
+            android:name="LGBackup.DefaultBackupSize"
+            android:value="0" />
+        <meta-data
+            android:name="LGBackup.MobileSwitch.LargeData"
+            android:value="true" />
+        <meta-data
+            android:name="LGBackup.SizeUpdate"
+            android:value="content://com.android.providers.dbbackup.BackupSizeUpdateProvider" />
+
+        <!--
+	======================================
+		LIBRARYS
+	======================================
+        -->
+        <uses-library android:name="org.apache.http.legacy" android:required="false" />
+
+        <!-- SBP+ -->
+        <receiver android:name="com.android.providers.telephony.CustChangedReceiver" >
+            <intent-filter>
+                <action android:name="com.lge.action.CUST_CHANGED_INFO" />
+            </intent-filter>
+        </receiver>
+
+        <provider
+            android:name="TelephonyProvider"
+            android:authorities="telephony"
+            android:exported="true"
+            android:multiprocess="false"
+            android:singleUser="true" />
+
+        <provider android:name="ServiceStateProvider"
+            android:authorities="service-state"
+            android:exported="true"
+            android:singleUser="true"
+            android:writePermission="android.permission.MODIFY_PHONE_STATE"
+            android:multiprocess="false" />
+
+
+        <!--
+         This is a singleton provider that is used by all users.
+             A new instance is not created for each user. And the db is shared
+             as well.
+
+             Note: We do not require a write permission as it is guarded by an app op.
+        -->
+        <provider
+            android:name="SmsProvider"
+            android:authorities="sms"
+            android:exported="true"
+            android:multiprocess="false"
+            android:readPermission="android.permission.READ_SMS"
+            android:singleUser="true" />
+
+        <!--
+         This is a singleton provider that is used by all users.
+             A new instance is not created for each user. And the db is shared
+             as well.
+
+             Note: We do not require a write permission as it is guarded by an app op.
+        -->
+        <provider
+            android:name="MmsProvider"
+            android:authorities="mms"
+            android:exported="true"
+            android:multiprocess="false"
+            android:readPermission="android.permission.READ_SMS"
+            android:singleUser="true" >
+            <grant-uri-permission android:pathPrefix="/part/" />
+            <grant-uri-permission android:pathPrefix="/drm/" />
+        </provider>
+
+        <!--
+         This is a singleton provider that is used by all users.
+             A new instance is not created for each user. And the db is shared
+             as well.
+
+             Note: We do not require a write permission as it is guarded by an app op.
+        -->
+        <provider
+            android:name="MmsSmsProvider"
+            android:authorities="mms-sms"
+            android:exported="true"
+            android:multiprocess="false"
+            android:readPermission="android.permission.READ_SMS"
+            android:singleUser="true" />
+
+        <!-- LGE_CHANGE_MESSAGE_S -->
+        <provider
+            android:name="MmsUploadBpsProvider"
+            android:authorities="mmsuploadbps"
+            android:exported="true"
+            android:multiprocess="false"
+            android:readPermission="android.permission.READ_SMS"
+            android:writePermission="android.permission.WRITE_SMS" />
+        <!-- LGE_CHANGE_MESSAGE_E -->
+
+
+        <!-- LGE_MESSAGE_CHANGE_S mms_hidden_setting -->
+        <provider
+            android:name="LgeMmsHiddenPrefProvider"
+            android:authorities="mmshiddenpref"
+            android:exported="true"
+            android:multiprocess="false"
+            android:singleUser="true" 
+            android:readPermission="android.permission.READ_SMS"/>
+        
+        <provider
+            android:name=".twophone.TwoPhoneManagerProvider"
+            android:authorities="twophonemanager"
+            android:exported="true"
+            android:multiprocess="false"
+            android:readPermission="android.permission.READ_SMS"
+            android:singleUser="true" />
+
+        <!-- LGE_CHANGE_MESSAGE_E -->
+
+        <receiver android:name="com.android.providers.dbbackup.BackupRestoreReceiver" >
+            <intent-filter>
+                <action android:name="com.lge.bnr.intent.action.REQUEST_MESSAGE" />
+                <action android:name="com.lge.bnr.intent.action.QUERY" />
+            </intent-filter>
+        </receiver>
+
+        <receiver android:name="com.android.providers.telephony.dump.DumpMessageReceiver" >
+            <intent-filter>
+                <action android:name="com.lge.message.mirror.START_DUMP" />
+            </intent-filter>
+        </receiver>
+        
+        <!-- RCS Joyn -->
+        <!--
+            This is a singleton provider that is used by all users.
+             A new instance is not created for each user. And the db is shared
+             as well.
+        -->
+        <provider
+            android:name="MmsSmsRcsProvider"
+            android:authorities="mms-sms-rcs"
+            android:exported="true"
+            android:multiprocess="false"
+            android:readPermission="android.permission.READ_SMS"
+            android:singleUser="true" />
+
+        <!--
+            This is a singleton provider that is used by all users.
+             A new instance is not created for each user. And the db is shared
+             as well.
+        -->
+        <provider
+            android:name=".joyn.ChatMemberProvider"
+            android:authorities="com.lge.ims.rcsim.database.provider.member"
+            android:exported="true"
+            android:multiprocess="false"
+            android:readPermission="android.permission.READ_SMS"
+            android:singleUser="true" />
+
+        <!--
+            This is a singleton provider that is used by all users.
+             A new instance is not created for each user. And the db is shared
+             as well.
+        -->
+        <!-- android:authorities="com.lge.ims.rcsim.database.provider.message" -->
+        <provider
+            android:name=".joyn.ChatMessageProvider"
+            android:authorities="com.lge.ims.rcsim.database.provider.message"
+            android:exported="true"
+            android:multiprocess="false"
+            android:readPermission="android.permission.READ_SMS"
+            android:singleUser="true">
+            <grant-uri-permission android:pathPrefix="/file_info/" />
+            <grant-uri-permission android:pathPrefix="/drm/" />
+        </provider>
+
+        <provider
+            android:name=".joyn.SessionInfoProvider"
+            android:authorities="com.lge.ims.rcsim.database.provider.session_info"
+            android:exported="true"
+            android:multiprocess="false"
+            android:readPermission="android.permission.READ_SMS"
+            android:singleUser="true" />
+
+        <!-- android:authorities="com.lge.ims.rcsim.database.provider.person" -->
+        <!--
+            This is a singleton provider that is used by all users.
+             A new instance is not created for each user. And the db is shared
+             as well.
+        -->
+        <provider
+            android:name=".joyn.PersonProvider"
+            android:authorities="com.lge.ims.rcsim.database.provider.person"
+            android:exported="true"
+            android:multiprocess="false"
+            android:readPermission="android.permission.READ_SMS"
+            android:singleUser="true" />
+
+        <!-- android:authorities="com.lge.ims.rcsim.database.provider.notification" -->
+        <!--
+            This is a singleton provider that is used by all users.
+             A new instance is not created for each user. And the db is shared
+             as well.
+        -->
+        <provider
+            android:name=".joyn.NotificationProvider"
+            android:authorities="com.lge.ims.rcsim.database.provider.notification"
+            android:exported="true"
+            android:multiprocess="false"
+            android:readPermission="android.permission.READ_SMS"
+            android:singleUser="true" />
+
+        <!--
+            This is a singleton provider that is used by all users.
+             A new instance is not created for each user. And the db is shared
+             as well.
+        -->
+        <!-- android:authorities="com.lge.ims.rcsim.database.provider.setting" -->
+        <provider
+            android:name=".joyn.SettingProvider"
+            android:authorities="com.lge.ims.rcsim.database.provider.setting"
+            android:exported="true"
+            android:multiprocess="false"
+            android:readPermission="android.permission.READ_SMS"
+            android:singleUser="true" />
+        <provider
+            android:name="HbpcdLookupProvider"
+            android:authorities="hbpcd_lookup"
+            android:exported="true"
+            android:multiprocess="false"
+            android:singleUser="true"
+            android:writePermission="android.permission.MODIFY_PHONE_STATE" />
+        <!-- RCS Joyn -->
+
+        <provider android:name="com.android.providers.dbbackup.BackupSizeUpdateProvider"
+            android:exported="true"
+            android:authorities="com.android.providers.dbbackup.BackupSizeUpdateProvider" 
+            android:readPermission="android.permission.READ_SMS"
+            android:multiprocess="false"
+            android:singleUser="true" />
+        
+        <provider
+            android:name="com.android.providers.dbbackup.MmsSmsRestoreEnhanceDebugProvider"
+            android:authorities="com.android.providers.dbbackup.MmsSmsRestoreEnhanceDebugProvider"
+            android:exported="true"
+            android:multiprocess="false"
+            android:readPermission="android.permission.READ_SMS"
+            android:singleUser="true" />
+
+        <service
+            android:name=".TelephonyBackupAgent$DeferredSmsMmsRestoreService"
+            android:exported="false" />
+
+
+        <!--  [START][Jansky]  -->
+        <provider
+            android:name=".joyn.JanskyPrimayLineProvider"
+            android:authorities="com.lge.ims.rcsim.database.provider.primary_line"
+            android:exported="true"
+            android:multiprocess="false"
+            android:readPermission="android.permission.READ_SMS"
+            android:singleUser="true" />
+        <!--  [END][Jansky]  -->
+        
+        <provider android:name="CarrierProvider"
+                  android:authorities="carrier_information"
+                  android:exported="true"
+                  android:singleUser="true"
+                  android:multiprocess="false"
+                  android:writePermission="android.permission.MODIFY_PHONE_STATE" />
+
+        <provider android:name="CarrierIdProvider"
+                  android:authorities="carrier_id"
+                  android:exported="true"
+                  android:singleUser="true"
+                  android:multiprocess="false" />
+        
+    </application>
+
+</manifest>
